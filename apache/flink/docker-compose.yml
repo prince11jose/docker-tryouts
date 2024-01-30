@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  jobmanager:
+    container_name: flink-jobmanager
+    image: docker.io/bitnami/flink:1
+    ports:
+      - "6123:6123"
+      - "8081:8081"
+    volumes:
+      - ./jobmanager.conf.d/conf:/bitnami/flink/conf
+    environment:
+      - FLINK_MODE=jobmanager
+      - FLINK_CFG_REST_BIND__ADDRESS=0.0.0.0
+
+  taskmanager:
+    container_name: flink-taskmanager
+    image: docker.io/bitnami/flink:1
+    ports:
+      - "6121:6121"
+      - "6122:6122"
+    volumes:
+      - ./taskmanager.conf.d/conf:/bitnami/flink/conf
+    environment:
+      - FLINK_MODE=taskmanager
+      - FLINK_JOB_MANAGER_RPC_ADDRESS=flink-jobmanager
+
+volumes:
+  kafka_data:
+    driver: local
